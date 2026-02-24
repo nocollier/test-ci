@@ -23,7 +23,7 @@ jobs:
       - run: |
           REPO_ROOT=$PWD
           for FILE in ${{ steps.files.outputs.all }}; do
-            if [ "$(basename "${FILE}")" -ne "convert.py" ]; then
+            if [ "$(basename "${FILE}")" != "convert.py" ]; then
               continue
             fi
             echo "Running ${FILE}..."
