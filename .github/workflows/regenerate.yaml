@@ -13,14 +13,18 @@ jobs:
       - name: Install uv environment
         uses: astral-sh/setup-uv@v4
 
+      - name: Install ncdump
+        run: sudo apt-get install -y netcdf-bin
+
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Generate artifacts & validate
+      - name: Get changed files in this PR
         uses: jitterbit/get-changed-files@v1
         id: files
         
-      - run: |
+      - name: Generate artifacts & validate
+        run: |
           REPO_ROOT=$PWD
           for FILE in ${{ steps.files.outputs.all }}; do
             if [ "$(basename "${FILE}")" != "convert.py" ]; then
@@ -31,6 +35,7 @@ jobs:
             uv run python convert.py
             for NC_FILE in $(ls *.nc); do
               echo "  Validating ${NC_FILE}..."
+              ncdump -h "$NC_FILE"
             done
             cd $REPO_ROOT
           done
