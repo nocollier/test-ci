@@ -1,0 +1,26 @@
+name: "Regenerate the artifacts"
+description: "Runs the submitted convert.py to create artifacts to be ingested."
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  build:
+    if: github.repository == 'nocollier/test-ci' && github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Generate artifacts
+        run: |
+          git fetch origin main -q
+          CONVERT_FILES=$(git diff --name-only HEAD^ HEAD | grep convert.py)
+          REPO_ROOT=$PWD
+          for FILE in $CONVERT_FILES; do
+              echo "Running ${FILE}..."
+              cd "$(dirname "${FILE}")"
+              python convert.py
+              cd $REPO_ROOT
+          done
+
