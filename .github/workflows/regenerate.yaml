@@ -26,6 +26,8 @@ jobs:
       - name: Generate artifacts & validate
         run: |
           REPO_ROOT=$PWD
+          DUMP_FILE="$PWD/ncdumps.txt"
+          echo "\`\`\`" > $DUMP_FILE
           for FILE in ${{ steps.files.outputs.all }}; do
             if [ "$(basename "${FILE}")" != "convert.py" ]; then
               continue
@@ -35,14 +37,15 @@ jobs:
             uv run python convert.py
             for NC_FILE in $(ls *.nc); do
               echo "  Validating ${NC_FILE}..."
-              ncdump -h "$NC_FILE" >> ncdumps.txt
+              ncdump -h "$NC_FILE" >> $DUMP_FILE
             done
             cd $REPO_ROOT
           done
+          echo "\`\`\`" >> $DUMP_FILE
 
       - name: Annotate PR with ncdumps
         uses: thollander/actions-comment-pull-request@v3
         with:
-          file-path: ncdumps.txt
+          file-path: $DUMP_FILE
           comment-tag: ncdump
           
