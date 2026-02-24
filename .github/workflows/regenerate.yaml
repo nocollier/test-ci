@@ -1,13 +1,13 @@
 name: "Regenerate the artifacts"
 description: "Runs the submitted convert.py to create artifacts to be ingested."
 on:
-  pull_request_review:
-    types: [submitted]
-  workflow_dispatch:
-    
+  pull_request:
+    branches:
+      - main
+
 jobs:
   build:
-    if: github.repository == 'nocollier/test-ci'  && github.event.review.state == 'approved'
+    if: github.repository == 'nocollier/test-ci'
     runs-on: ubuntu-latest
     steps: 
       - name: Install uv environment
@@ -15,21 +15,22 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 2
 
       - name: Generate artifacts & validate
-        run: |
-          git fetch origin main -q
-          CONVERT_FILES=$(git diff --name-only HEAD^ HEAD | grep convert.py)
+        uses: jitterbit/get-changed-files@v1
+        id: files
+        
+      - run: |
           REPO_ROOT=$PWD
-          for FILE in $CONVERT_FILES; do
-              echo "Running ${FILE}..."
-              cd "$(dirname "${FILE}")"
-              uv run python convert.py
-              for NC_FILE in $(ls *.nc); do
-                echo "  Validating ${NC_FILE}..."
-              done
-              cd $REPO_ROOT
+          for FILE in ${{ steps.files.outputs.all }}; do
+            if [ "$(basename "${FILE}")" -ne "convert.py" ]; then
+              continue
+            fi
+            echo "Running ${FILE}..."
+            cd "$(dirname "${FILE}")"
+            uv run python convert.py
+            for NC_FILE in $(ls *.nc); do
+              echo "  Validating ${NC_FILE}..."
+            done
+            cd $REPO_ROOT
           done
-
