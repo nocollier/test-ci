@@ -3,7 +3,8 @@ description: "Runs the submitted convert.py to create artifacts to be ingested."
 on:
   pull_request_review:
     types: [submitted]
-
+  workflow_dispatch:
+    
 jobs:
   build:
     if: github.repository == 'nocollier/test-ci'  && github.event.review.state == 'approved'
