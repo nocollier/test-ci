@@ -9,6 +9,9 @@ jobs:
     if: github.repository == 'nocollier/test-ci' && github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps: 
+      - name: Install uv environment
+        uses: astral-sh/setup-uv@v4
+
       - name: Checkout code
         uses: actions/checkout@v6
 
@@ -20,7 +23,7 @@ jobs:
           for FILE in $CONVERT_FILES; do
               echo "Running ${FILE}..."
               cd "$(dirname "${FILE}")"
-              python convert.py
+              uv run python convert.py
               cd $REPO_ROOT
           done
 
