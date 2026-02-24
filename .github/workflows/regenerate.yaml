@@ -42,10 +42,12 @@ jobs:
             cd $REPO_ROOT
           done
           echo "\`\`\`" >> $DUMP_FILE
-
+          cat $DUMP_FILE
+          
       - name: Annotate PR with ncdumps
         uses: thollander/actions-comment-pull-request@v3
         with:
+          github-token: ${{secrets.GHT}}
           file-path: "${{ github.workspace }}/ncdumps.txt"
           comment-tag: ncdump
           
