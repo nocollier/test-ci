@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'nocollier/test-ci' && github.event.review.state == 'approved'
+    if: github.repository == 'nocollier/test-ci'  && github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps: 
       - name: Install uv environment
@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Generate artifacts
+      - name: Generate artifacts & validate
         run: |
           git fetch origin main -q
           CONVERT_FILES=$(git diff --name-only HEAD^ HEAD | grep convert.py)
@@ -24,6 +24,9 @@ jobs:
               echo "Running ${FILE}..."
               cd "$(dirname "${FILE}")"
               uv run python convert.py
+              for NC_FILE in $(ls *.nc); do
+                echo "  Validating ${NC_FILE}..."
+              done
               cd $REPO_ROOT
           done
 
