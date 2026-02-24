@@ -26,7 +26,7 @@ jobs:
       - name: Generate artifacts & validate
         run: |
           REPO_ROOT=$PWD
-          DUMP_FILE="$PWD/ncdumps.txt"
+          DUMP_FILE="${{ github.workspace }}/ncdumps.txt"
           echo "\`\`\`" > $DUMP_FILE
           for FILE in ${{ steps.files.outputs.all }}; do
             if [ "$(basename "${FILE}")" != "convert.py" ]; then
@@ -46,6 +46,6 @@ jobs:
       - name: Annotate PR with ncdumps
         uses: thollander/actions-comment-pull-request@v3
         with:
-          file-path: "$PWD/ncdumps.txt"
+          file-path: "${{ github.workspace }}/ncdumps.txt"
           comment-tag: ncdump
           
