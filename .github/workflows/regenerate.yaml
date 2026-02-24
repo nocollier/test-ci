@@ -35,7 +35,14 @@ jobs:
             uv run python convert.py
             for NC_FILE in $(ls *.nc); do
               echo "  Validating ${NC_FILE}..."
-              ncdump -h "$NC_FILE"
+              ncdump -h "$NC_FILE" >> ncdumps.txt
             done
             cd $REPO_ROOT
           done
+
+      - name: Annotate PR with ncdumps
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: ncdumps.txt
+          comment-tag: ncdump
+          
