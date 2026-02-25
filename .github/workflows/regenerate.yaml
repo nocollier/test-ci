@@ -27,7 +27,8 @@ jobs:
         run: |
           REPO_ROOT=$PWD
           DUMP_FILE="${{ github.workspace }}/ncdumps.txt"
-          echo "\`\`\`" > $DUMP_FILE
+          echo "## NetCDF Dumps of Artifacts" > $DUMP_FILE
+          echo "\`\`\`" >> $DUMP_FILE
           for FILE in ${{ steps.files.outputs.all }}; do
             if [ "$(basename "${FILE}")" != "convert.py" ]; then
               continue
