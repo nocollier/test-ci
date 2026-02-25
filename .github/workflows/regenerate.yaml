@@ -52,6 +52,6 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           github-token: ${{secrets.GHT}}
-          file-path: "$DUMP_FILE"
+          file-path: $DUMP_FILE
           comment-tag: ncdump
           
