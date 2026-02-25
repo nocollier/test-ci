@@ -25,7 +25,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "DUMP_FILE='${{ github.workspace }}/ncdumps.txt'" >> "$GITHUB_ENV"
+          echo "DUMP_FILE=${{ github.workspace }}/ncdumps.txt" >> "$GITHUB_ENV"
         
       - name: Generate artifacts & validate
         run: |
