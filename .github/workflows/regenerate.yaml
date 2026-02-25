@@ -22,12 +22,15 @@ jobs:
       - name: Get changed files in this PR
         uses: jitterbit/get-changed-files@v1
         id: files
+
+      - name: Set environment variables
+        run: |
+          echo "DUMP_FILE='${{ github.workspace }}/ncdumps.txt'" >> "$GITHUB_ENV"
         
       - name: Generate artifacts & validate
         run: |
           REPO_ROOT=$PWD
-          DUMP_FILE="${{ github.workspace }}/ncdumps.txt"
-          echo "## NetCDF Dumps of Artifacts" > $DUMP_FILE
+          echo "## NetCDF Header Dump of Artifacts" > $DUMP_FILE
           echo "\`\`\`" >> $DUMP_FILE
           for FILE in ${{ steps.files.outputs.all }}; do
             if [ "$(basename "${FILE}")" != "convert.py" ]; then
@@ -49,6 +52,6 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           github-token: ${{secrets.GHT}}
-          file-path: "${{ github.workspace }}/ncdumps.txt"
+          file-path: "$DUMP_FILE"
           comment-tag: ncdump
           
