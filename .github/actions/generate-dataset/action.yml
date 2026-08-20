@@ -11,6 +11,7 @@ runs:
       uses: jitterbit/get-changed-files@v1
       id: files
     - name: Generate artifacts
+      shell: bash
       run: |
         ROOT=$PWD
         for FPATH in ${{ steps.files.outputs.all }}; do
