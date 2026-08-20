@@ -1,0 +1,25 @@
+name: "Generate Dataset"
+description: "Generate the dataset produced by the submitted python script"
+runs:
+  using: "composite"
+  steps:
+    - name: Install uv environment
+      uses: astral-sh/setup-uv@v4
+    - name: Checkout code
+      uses: actions/checkout@v6
+    - name: Get changed files in this PR
+      uses: jitterbit/get-changed-files@v1
+      id: files
+    - name: Generate artifacts
+      run: |
+        ROOT=$PWD
+        for FPATH in ${{ steps.files.outputs.all }}; do
+          FILE=$(basename ${FPATH})
+          if [ ${FILE##*.} != "py" ]; then
+            continue
+          fi
+          cd $(dirname ${FPATH})
+          echo "Executing ${FILE}..."
+          uv run python ${FILE}
+          cd $ROOT
+        done
