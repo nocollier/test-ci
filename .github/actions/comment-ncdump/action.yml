@@ -4,6 +4,7 @@ runs:
   using: "composite"
   steps:
     - name: Install ncdump
+      shell: bash
       run: sudo apt-get install -y netcdf-bin
     - name: Checkout code
       uses: actions/checkout@v6
@@ -12,7 +13,7 @@ runs:
     - name: Get changed files in this PR
       uses: jitterbit/get-changed-files@v1
       id: files
-    - name:
+    - name: Run `ncdump -h` on all datasets generated
       shell: bash
       run: |
         echo "NCDUMP_FILE=${{ github.workspace }}/ncdumps.txt" >> "$GITHUB_ENV"
