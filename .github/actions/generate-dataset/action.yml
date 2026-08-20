@@ -7,6 +7,8 @@ runs:
       uses: astral-sh/setup-uv@v4
     - name: Checkout code
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
     - name: Get changed files in this PR
       uses: jitterbit/get-changed-files@v1
       id: files

@@ -1,0 +1,42 @@
+name: Comment ncdump
+description: Execute ncdump on all generated datasets and post to comment
+runs:
+  using: "composite"
+  steps:
+    - name: Install ncdump
+      run: sudo apt-get install -y netcdf-bin
+    - name: Checkout code
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+    - name: Get changed files in this PR
+      uses: jitterbit/get-changed-files@v1
+      id: files
+    - name:
+      shell: bash
+      run: |
+        echo "NCDUMP_FILE=${{ github.workspace }}/ncdumps.txt" >> "$GITHUB_ENV"
+        echo "## NetCDF Header Dump" > $NCDUMP_FILE
+        echo "\`\`\`" >> $NCDUMP_FILE
+        ROOT=$PWD
+        for FPATH in ${{ steps.files.outputs.all }}; do
+          FILE=$(basename ${FPATH})
+          if [ ${FILE##*.} != "py" ]; then
+            continue
+          fi
+          cd $(dirname ${FPATH})
+          for NC_FILE in $(ls *.nc); do
+            echo "ncdump -h ${NC_FILE}..."
+            ncdump -h "$NC_FILE" >> $NCDUMP_FILE
+          done
+          cd $ROOT
+        done
+        echo "\`\`\`" >> $NCDUMP_FILE
+        cat $NCDUMP_FILE
+
+    - name: Annotate PR with ncdumps
+      uses: thollander/actions-comment-pull-request@v3
+      with:
+        github-token: ${{secrets.GHT}}
+        file-path: $NCDUMP_FILE
+        comment-tag: ncdump

@@ -18,3 +18,5 @@ jobs:
           fetch-depth: 0
       - name: Run the generation action
         uses: ./.github/actions/generate-dataset
+      - name: Run the ncdump action
+        uses: ./.github/actions/comment-ncdump
