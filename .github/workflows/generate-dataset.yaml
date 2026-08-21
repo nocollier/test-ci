@@ -1,4 +1,4 @@
-name: Generate the datasets
+name: Generate
 on:
   pull_request:
     branches:
@@ -6,19 +6,22 @@ on:
 
 jobs:
   generate-dataset:
-    name: Generate the dataset to be ingested
+    name: Create the dataset(s) to be ingested
     runs-on: ubuntu-latest
     if: github.repository == 'nocollier/test-ci'
     permissions:
       contents: read
     steps:
+      - name: Install uv environment
+        uses: astral-sh/setup-uv@v4
       - name: Checkout source code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Run the generation action
-        uses: ./.github/actions/generate-dataset
-      - name: Run the ncdump action
-        uses: ./.github/actions/comment-ncdump
-        with:
-          token: ${{ secrets.GHT }}
+      - name: Run the scripts
+        uses: uv run python ./scripts/run_generation_scripts.py $(git diff --name-only HEAD main)
+
+      #- name: Run the ncdump action
+      #  uses: ./.github/actions/comment-ncdump
+      #  with:
+      #    token: ${{ secrets.GHT }}
