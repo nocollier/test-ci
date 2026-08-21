@@ -13,36 +13,12 @@ runs:
     - name: Get changed files in this PR
       uses: jitterbit/get-changed-files@v1
       id: files
-    - name: Set environment variable
-      shell: bash
-      run: |
-        echo "NCDUMP_FILE=${{ github.workspace }}/ncdumps.txt" >> $GITHUB_ENV
     - name: Run `ncdump -h` on all datasets generated
       shell: bash
       run: |
-        echo "## NetCDF Header Dump" > $NCDUMP_FILE
-        echo "\`\`\`" >> $NCDUMP_FILE
-        ROOT=$PWD
-        for FPATH in ${{ steps.files.outputs.all }}; do
-          FILE=$(basename ${FPATH})
-          if [ ${FILE##*.} != "py" ]; then
-            continue
-          fi
-          cd $(dirname ${FPATH})
-          for NC_FILE in $(ls); do
-            if [ ${NC_FILE##*.} != "nc" ]; then
-              continue
-            fi
-            echo "ncdump -h ${NC_FILE}..."
-            ncdump -h "$NC_FILE" >> $NCDUMP_FILE
-          done
-          cd $ROOT
-        done
-        echo "\`\`\`" >> $NCDUMP_FILE
-        cat $NCDUMP_FILE
-
+        find . -name "*.nc" -printf '%p\n' -exec ncdump -h {} \; > "${{ github.workspace }}/ncdumps.txt"
     - name: Annotate PR with ncdumps
       uses: thollander/actions-comment-pull-request@v3
       with:
-        file-path: $NCDUMP_FILE
+        file-path: "${{ github.workspace }}/ncdumps.txt"
         comment-tag: ncdump
