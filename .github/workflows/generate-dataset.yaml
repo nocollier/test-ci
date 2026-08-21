@@ -19,7 +19,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run the scripts
-        uses: uv run python ./scripts/run_generation_scripts.py $(git diff --name-only HEAD main)
+        run: |
+          uv run python ./scripts/run_generation_scripts.py $(git diff --name-only HEAD main)
 
       #- name: Run the ncdump action
       #  uses: ./.github/actions/comment-ncdump
