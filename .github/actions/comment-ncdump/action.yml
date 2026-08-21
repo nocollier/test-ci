@@ -13,10 +13,13 @@ runs:
     - name: Get changed files in this PR
       uses: jitterbit/get-changed-files@v1
       id: files
+    - name: Set environment variable
+      shell: bash
+      run: |
+        echo "NCDUMP_FILE=${{ github.workspace }}/ncdumps.txt" >> $GITHUB_ENV
     - name: Run `ncdump -h` on all datasets generated
       shell: bash
       run: |
-        echo "NCDUMP_FILE=${{ github.workspace }}/ncdumps.txt" >> "$GITHUB_ENV"
         echo "## NetCDF Header Dump" > $NCDUMP_FILE
         echo "\`\`\`" >> $NCDUMP_FILE
         ROOT=$PWD
