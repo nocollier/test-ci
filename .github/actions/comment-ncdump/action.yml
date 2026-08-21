@@ -20,6 +20,7 @@ runs:
       shell: bash
       run: |
         find . -name "*.nc" -printf '%p\n' -exec ncdump -h {} \; > "${{ github.workspace }}/ncdumps.txt"
+        cat "${{ github.workspace }}/ncdumps.txt"
     - name: Annotate PR with ncdumps
       uses: thollander/actions-comment-pull-request@v3
       with:
