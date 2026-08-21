@@ -1,4 +1,4 @@
-name: Generate
+name: Generate & visualize
 on:
   pull_request:
     branches:
@@ -12,19 +12,23 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Install uv environment
+      - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Checkout source code
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - name: Get changed files in this PR
         uses: jitterbit/get-changed-files@v1
         id: files
-      - name: Run the scripts
+      - name: Run the data generation scripts
+        id: ingest
         run: |
           uv run python ./scripts/run_generation_scripts.py ${{ steps.files.outputs.all }}
-
+          cat to_ingest.txt >> "$GITHUB_OUTPUT"
+      - name: Gen
+        run: |
+          for FPATH in ${{ steps.ingest.outputs }}; do
+            echo $FPATH
+          done
       #- name: Run the ncdump action
       #  uses: ./.github/actions/comment-ncdump
       #  with:
