@@ -29,7 +29,10 @@ runs:
             continue
           fi
           cd $(dirname ${FPATH})
-          for NC_FILE in $(ls *.nc); do
+          for NC_FILE in $(ls); do
+            if [ ${NC_FILE##*.} != "nc" ]; then
+              continue
+            fi
             echo "ncdump -h ${NC_FILE}..."
             ncdump -h "$NC_FILE" >> $NCDUMP_FILE
           done
