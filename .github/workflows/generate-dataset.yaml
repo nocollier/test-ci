@@ -20,3 +20,5 @@ jobs:
         uses: ./.github/actions/generate-dataset
       - name: Run the ncdump action
         uses: ./.github/actions/comment-ncdump
+        with:
+          token: ${{ secrets.GHT }}

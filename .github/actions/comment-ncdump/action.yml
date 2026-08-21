@@ -1,5 +1,8 @@
 name: Comment ncdump
 description: Execute ncdump on all generated datasets and post to comment
+inputs:
+  token:
+    required: true
 runs:
   using: "composite"
   steps:
@@ -20,7 +23,6 @@ runs:
     - name: Annotate PR with ncdumps
       uses: thollander/actions-comment-pull-request@v3
       with:
-        github-token: ${{ secrets.GHT }}
+        github-token: ${{ inputs.token }}
         file-path: "${{ github.workspace }}/ncdumps.txt"
         comment-tag: ncdump
-      secrets: inherit
