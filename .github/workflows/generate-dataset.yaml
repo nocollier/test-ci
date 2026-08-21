@@ -16,8 +16,6 @@ jobs:
         uses: astral-sh/setup-uv@v4
       - name: Checkout source code
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - name: Run the scripts
         run: |
           uv run python ./scripts/run_generation_scripts.py $(git diff --name-only HEAD main)
