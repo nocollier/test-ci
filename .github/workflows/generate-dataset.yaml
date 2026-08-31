@@ -20,14 +20,11 @@ jobs:
         uses: jitterbit/get-changed-files@v1
         id: files
       - name: Run the data generation scripts
-        id: ingest
         run: |
+          ls -l
           uv run python ./scripts/run_generation_scripts.py ${{ steps.files.outputs.all }}
-      - name: Gen
-        run: |
-          while read FILE; do
-            echo "$FILE"
-          done <to_ingest.txt
+          ls -l
+          cat to_ingest.txt
 
       #- name: Run the ncdump action
       #  uses: ./.github/actions/comment-ncdump
