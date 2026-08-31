@@ -19,19 +19,15 @@ jobs:
       - name: Get changed files in this PR
         uses: jitterbit/get-changed-files@v1
         id: files
-      - name: What is already there?
-        run: |
-          ls -l
       - name: Run the data generation scripts
         run: |
           uv run python ./scripts/run_generation_scripts.py ${{ steps.files.outputs.all }}
-          echo "------------- before"
-          cat to_ingest.txt
-          echo "------------- after"
-      - name: Does it stay?
+      - name: Create summary information
         run: |
-          ls -l
-      #- name: Run the ncdump action
-      #  uses: ./.github/actions/comment-ncdump
-      #  with:
-      #    token: ${{ secrets.GHT }}
+          uv run python ./scripts/visualize_dataset.py to_ingest.txt
+      - name: Annotate PR with ncdumps
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GHT }}
+          file-path: "ncdumps.txt"
+          comment-tag: ncdump
