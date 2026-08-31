@@ -1,0 +1,28 @@
+name: Publish from Comment
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  run-ci:
+    if: >
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/publish')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check user permission
+        run: |
+          echo "Triggered by an admin/collaborator: ${{ github.event.comment.user.login }}"
+          echo "Author association: $${{ github.event.comment.author_association }}"
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref }}
+      - name: Add dataset(s) to registry
+        run: |
+          ls -l
+          tree .

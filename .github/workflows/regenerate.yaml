@@ -3,13 +3,13 @@ description: "Runs the submitted convert.py to create artifacts to be ingested."
 on:
   pull_request:
     branches:
-      - main
+      - junk
 
 jobs:
   build:
     if: github.repository == 'nocollier/test-ci'
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Install uv environment
         uses: astral-sh/setup-uv@v4
 
@@ -26,7 +26,7 @@ jobs:
       - name: Set environment variables
         run: |
           echo "DUMP_FILE=${{ github.workspace }}/ncdumps.txt" >> "$GITHUB_ENV"
-        
+
       - name: Generate artifacts & validate
         run: |
           REPO_ROOT=$PWD
@@ -47,11 +47,10 @@ jobs:
           done
           echo "\`\`\`" >> $DUMP_FILE
           cat $DUMP_FILE
-          
+
       - name: Annotate PR with ncdumps
         uses: thollander/actions-comment-pull-request@v3
         with:
           github-token: ${{secrets.GHT}}
           file-path: $DUMP_FILE
           comment-tag: ncdump
-          
