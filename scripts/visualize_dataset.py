@@ -11,14 +11,6 @@ from pathlib import Path
 import xarray as xr
 from loguru import logger
 
-
-def visualize(filename: Path) -> str:
-    """ """
-    logger.info(f"Executing {filename=}...")
-    ds = xr.open_dataset(filename)
-    return f"\n{ds}\n"
-
-
 if __name__ == "__main__":
     datasets_to_visualize = [Path(f) for f in open(sys.argv[1], "r").readlines()]
     if not datasets_to_visualize:
@@ -31,9 +23,6 @@ if __name__ == "__main__":
 ## Dataset File Contents
 ```"""
     for dset in datasets_to_visualize:
-        comment += visualize(dset)
+        with open("ncdumps.txt", "w") as fout:
+            _ = xr.open_dataset(dset).info(fout)
     comment += "```"
-
-    # save a text file with each dataset to check/ingest
-    with open("ncdumps.txt", "w") as fout:
-        _ = fout.write(comment)
