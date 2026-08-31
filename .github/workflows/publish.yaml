@@ -1,0 +1,42 @@
+name: Publish from Comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  run-ci:
+    if: >
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/publish') &&
+      (
+        github.event.comment.author_association == 'OWNER' ||
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.author_association == 'COLLABORATOR'
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check user permission
+        run: |
+          echo "Triggered by an admin/collaborator: ${{ github.event.comment.user.login }}"
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref }}
+      - name: Add dataset(s) to registry
+        run: |
+          ls -l
+          tree .
+        #echo "Automated update" >> report.txt
+
+      # 3. Commit and push the changes back to the PR
+      #- name: Commit and Push Changes
+      #  uses: EndBug/add-and-commit@v10
+      #  with:
+      #    author_name: "Github Actions"
+      #    author_email: "41898282+github-actions[bot]@users.noreply.github.com"
+      #    message: "publish datasets"
+      #    add: "report.txt" # Use '.' to add all changed files
