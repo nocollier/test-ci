@@ -19,10 +19,10 @@ if __name__ == "__main__":
     logger.info(f"Found {datasets_to_visualize=}")
 
     # visualize each dataset
-    comment = """
+    with open("ncdumps.txt", "w") as fout:
+        fout.write("""
 ## Dataset File Contents
-```"""
-    for dset in datasets_to_visualize:
-        with open("ncdumps.txt", "w") as fout:
+```\n""")
+        for dset in datasets_to_visualize:
             _ = xr.open_dataset(dset).info(fout)
-    comment += "```"
+        fout.write("\n```")
