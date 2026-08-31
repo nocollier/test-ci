@@ -19,13 +19,18 @@ jobs:
       - name: Get changed files in this PR
         uses: jitterbit/get-changed-files@v1
         id: files
-      - name: Run the data generation scripts
+      - name: What is already there?
         run: |
           ls -l
+      - name: Run the data generation scripts
+        run: |
           uv run python ./scripts/run_generation_scripts.py ${{ steps.files.outputs.all }}
-          ls -l
+          echo "------------- before"
           cat to_ingest.txt
-
+          echo "------------- after"
+      - name: Does it stay?
+        run: |
+          ls -l
       #- name: Run the ncdump action
       #  uses: ./.github/actions/comment-ncdump
       #  with:
