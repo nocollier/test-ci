@@ -22,7 +22,6 @@ jobs:
       - name: Check user permission
         run: |
           echo "Triggered by an admin/collaborator: ${{ github.event.comment.user.login }}"
-          echo "Author association: $${{ github.event.comment.author_association }}"
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
