@@ -1,4 +1,6 @@
-""" """
+"""
+Update the 'registry/data.txt' with datasets found in the input list of files.
+"""
 
 import hashlib
 import sys
@@ -19,6 +21,7 @@ if __name__ == "__main__":
     with open("registry/data.txt") as fin:
         reg = {line.split()[0]: line.split()[1] for line in fin.readlines()}
 
+    # check the hash and update the registry table as needed
     for dset in datasets_to_publish:
         key = str(dset).replace("data/", "")
         hash = hashlib.sha1(dset.read_bytes()).hexdigest()
