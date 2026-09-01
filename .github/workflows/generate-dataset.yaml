@@ -1,0 +1,33 @@
+name: Generate & visualize
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  generate-dataset:
+    name: Create the dataset(s) to be ingested
+    runs-on: ubuntu-latest
+    if: github.repository == 'nocollier/test-ci'
+    permissions:
+      contents: read
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Checkout source code
+        uses: actions/checkout@v6
+      - name: Get changed files in this PR
+        uses: jitterbit/get-changed-files@v1
+        id: files
+      - name: Run the data generation scripts
+        run: |
+          uv run python ./scripts/run_generation_scripts.py ${{ steps.files.outputs.all }}
+      - name: Create summary information
+        run: |
+          uv run python ./scripts/visualize_dataset.py to_ingest.txt
+      - name: Annotate PR with ncdumps
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GHT }}
+          file-path: "ncdumps.txt"
+          comment-tag: ncdump

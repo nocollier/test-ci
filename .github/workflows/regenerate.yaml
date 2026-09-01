@@ -1,5 +1,5 @@
-name: "Regenerate the artifacts"
-description: "Runs the submitted convert.py to create artifacts to be ingested."
+name: Generate the datasets
+description: Runs the submitted convert.py to create artifacts to be ingested.
 on:
   pull_request:
     branches:
