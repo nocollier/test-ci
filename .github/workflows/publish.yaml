@@ -23,8 +23,8 @@ jobs:
         id: pr_details
         run: |
           PR_JSON=$(gh pr view ${{ github.event.issue.number }} --repo ${{ github.repository }} --json headRepository)
-          BRANCH_NAME=$(echo "$PR_JSON" | jq -r '.head.ref')
-          REPO_NAME=$(echo "$PR_JSON" | jq -r '.head.repository.fullName')
+          BRANCH_NAME=$(echo "$PR_JSON" | jq -r '.headRepository.id')
+          REPO_NAME=$(echo "$PR_JSON" | jq -r '.headRepository.nameWithOwner')
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "repo=$REPO_NAME" >> $GITHUB_OUTPUT
         env:
