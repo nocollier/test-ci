@@ -19,25 +19,13 @@ jobs:
       contents: write
 
     steps:
-      - name: Fetch PR Details
-        id: pr_details
-        run: |
-          PR_JSON=$(gh pr view ${{ github.event.issue.number }} --repo ${{ github.repository }} --json headRepository)
-          BRANCH_NAME=$(echo "$PR_JSON" | jq -r '.headRepository.id')
-          REPO_NAME=$(echo "$PR_JSON" | jq -r '.headRepository.nameWithOwner')
-          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
-          echo "repo=$REPO_NAME" >> $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ secrets.GHT }}
       - name: Checkout PR Branch
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ steps.pr_details.outputs.repo }}
-          ref: ${{ steps.pr_details.outputs.branch }}
+        uses: actions/checkout@v7
       - name: Verify Clone
         run: |
           git branch
           git log -1
+          tree .
       - name: Check user permission
         run: |
           echo "Triggered by an admin/collaborator: ${{ github.event.comment.user.login }}"
