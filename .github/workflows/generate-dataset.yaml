@@ -12,6 +12,17 @@ jobs:
     permissions:
       contents: read
     steps:
+      - uses: actions/checkout@v6
+      - name: Restore cache
+        id: cache-raw-and-artifacts
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            data/*/_raw/*
+            data/*/*.nc
+            to_ingest.txt
+          key: ${{ github.event.number }}-cache
+
       - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Checkout source code
@@ -31,3 +42,13 @@ jobs:
           github-token: ${{ secrets.GHT }}
           file-path: "ncdumps.txt"
           comment-tag: ncdump
+
+      - name: Save cache
+        id: cache-raw-and-artifacts-save
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            data/*/_raw/*
+            data/*/*.nc
+            to_ingest.txt
+          key: ${{ steps.cache-raw-and-artifacts.outputs.cache-primary-key }}-cache
