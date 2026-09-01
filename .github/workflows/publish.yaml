@@ -2,7 +2,7 @@ name: Publish from Comment
 
 on:
   issue_comment:
-    types: [created]
+    types: [created, edited]
 
 jobs:
   run-ci:
@@ -30,7 +30,6 @@ jobs:
         run: |
           ls -l
           tree .
-        #echo "Automated update" >> report.txt
 
       # 3. Commit and push the changes back to the PR
       #- name: Commit and Push Changes
