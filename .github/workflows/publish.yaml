@@ -23,6 +23,10 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+      - name: Dump Custom Repository/Organization Variables
+        env:
+          VARS_CONTEXT: ${{ toJson(vars) }}
+        run: echo "$VARS_CONTEXT"
       - name: Checkout PR Branch
         uses: actions/checkout@v7
       - name: Verify Clone
